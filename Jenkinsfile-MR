@@ -1,6 +1,10 @@
 pipeline {
     agent any
     
+    environment {
+        DOCKER_IMAGE_NAME "magdalena01/spring-petclinic"
+    }
+
     stages {
         stage('Checkstyle') {
             steps {
@@ -25,18 +29,32 @@ pipeline {
             }
         }
 
-        stage('CreateDockerImageMR') {
+        stage('BuildDockerImageMR') {
+            when {
+                branch 'main'
+            }
             steps {
-                // This stage builds a Docker image using the Dockerfile in your repository.
                 script {
-                    def shortGitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
-                    // Get the short Git commit hash
-                    sh "docker build -t magdalena01/spring-petclinic:${shortGitCommit} ."
-                    // Build the Docker image and tag it with the Git commit hash
-                    sh "docker push magdalena01/spring-petclinic:${shortGitCommit}"
-                    // Push the Docker image to the "mr" repository on Docker Hub
+                    app = docker.build(DOCKER_IMAGE_NAME)
+                    app.inside {
+                        sh 'echo Hello, World!'
+                    }
+                }
             }
         }
-    }
+
+        stage('PushDockerImageMR') {
+            when {
+                branch 'main'
+            }
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
+                }
+            }
+        }
 }
 }
