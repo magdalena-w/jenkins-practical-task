@@ -1,0 +1,41 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkstyle') {
+            steps {
+                // This stage runs the Checkstyle analysis using Maven and saves the report as an artifact.
+                sh 'mvn checkstyle:checkstyle'
+                archiveArtifacts artifacts: '**/target/checkstyle-result.xml', allowEmptyArchive: true
+                // Archive the Checkstyle report as a build artifact
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // This stage runs the tests using Maven.
+                sh 'mvn test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // This stage builds the application without running tests using Maven.
+                sh 'mvn clean install -DskipTests'
+            }
+        }
+
+        stage('CreateDockerImageMR') {
+            steps {
+                // This stage builds a Docker image using the Dockerfile in your repository.
+                script {
+                    def shortGitCommit = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
+                    // Get the short Git commit hash
+                    sh "docker build -t magdalena01/spring-petclinic:${shortGitCommit} ."
+                    // Build the Docker image and tag it with the Git commit hash
+                    sh "docker push magdalena01/spring-petclinic:${shortGitCommit}"
+                    // Push the Docker image to the "mr" repository on Docker Hub
+            }
+        }
+    }
+}

@@ -1,0 +1,18 @@
+pipeline {
+    agent any // This specifies that the pipeline can run on any available agent (build node).
+
+    stages {
+        stage('CreateDockerImageMain') {
+            steps {
+                // This stage builds a Docker image using the Dockerfile in your repository.
+                script {
+                    sh "docker build -t magdalena01/spring-petclinic:latest ."
+                    // Build the Docker image and tag it as "latest"
+                    sh "docker push magdalena01/spring-petclinic:latest"
+                    // Push the Docker image to the "main" repository on Docker Hub
+                }
+            }
+        }
+    }
+}
+
