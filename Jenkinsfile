@@ -57,13 +57,16 @@ pipeline {
             }
         }
         stage('CreateDockerImageMain') {
+            when {
+                branch 'main'
+            }
             steps {
                 // This stage builds a Docker image using the Dockerfile in your repository.
                 script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
                     sh "docker build -t magdalena01/main:latest ."
-                    // Build the Docker image and tag it as "latest"
                     sh "docker push magdalena01/main:latest"
-                    // Push the Docker image to the "main" repository on Docker Hub
+                    }
                 }
             }
         }
