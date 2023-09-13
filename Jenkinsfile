@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE_NAME = "magdalena01/spring-petclinic"
+        DOCKER_IMAGE_NAME = "magdalena01/main"
     }
 
     stages {
