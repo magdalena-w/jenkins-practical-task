@@ -29,7 +29,7 @@ pipeline {
         stage('CreateDockerImageMR') {
             steps {
                 script {
-                    docker.withRegistry('https://registry.docker.io', 'docker_hub_login') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
                         def dockerImage = docker.build("$DOCKER_REGISTRY_MR:spring-petclinic-$BUILD_NUMBER")
                         dockerImage.push()
                     }
