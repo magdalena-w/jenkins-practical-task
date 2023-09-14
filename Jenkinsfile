@@ -29,9 +29,9 @@ pipeline {
         stage('CreateDockerImageMR') {
             steps {
                 script {
-                    sh 'docker build -t ${DOCKER_REGISTRY_MR}:${GIT_COMMIT:0:7} -f Dockerfile .'
+                    sh 'docker build -t $DOCKER_REGISTRY_MR:${GIT_COMMIT:0:7} -f Dockerfile .'
                     docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                    sh 'docker push ${DOCKER_REGISTRY_MR}:${GIT_COMMIT:0:7}'
+                    sh 'docker push $DOCKER_REGISTRY_MR:${GIT_COMMIT:0:7}'
                     }
                 }
             }
@@ -43,9 +43,9 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'docker build -t ${DOCKER_REGISTRY_MAIN}:latest -f Dockerfile .'
+                    sh 'docker build -t $DOCKER_REGISTRY_MAIN:latest -f Dockerfile .'
                     docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        sh 'docker push ${DOCKER_REGISTRY_MAIN}:latest'
+                        sh 'docker push $DOCKER_REGISTRY_MAIN:latest'
                     }
                 }
             }
