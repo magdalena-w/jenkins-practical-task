@@ -2,8 +2,8 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_REGISTRY_MR = "magdalena01/mr"
-        DOCKER_REGISTRY_MAIN = "magdalena01/main"
+        DOCKER_REGISTRY_MR = "magdalena01/mr_jenkins"
+        DOCKER_REGISTRY_MAIN = "magdalena01/main_jenkins"
         SHORT_COMMIT = "${GIT_COMMIT[0..7]}"
     }
 
