@@ -29,8 +29,9 @@ pipeline {
         stage('CreateDockerImageMR') {
             steps {
                 script {
+                    def gitCommit = currentBuild.displayName
                     docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        def dockerImage = docker.build("$DOCKER_REGISTRY_MR:spring-petclinic-$BUILD_NUMBER")
+                        def dockerImage = docker.build("$DOCKER_REGISTRY_MR:spring-petclinic-$gitCommit")
                         dockerImage.push()
                     }
                 }
@@ -43,9 +44,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'docker build -t $DOCKER_REGISTRY_MAIN:latest -f Dockerfile .'
                     docker.withregistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        sh 'docker push $DOCKER_REGISTRY_MAIN:latest'
+                        def dockerImage = docker.build("$DOCKER_REGISTRY_MAIN:spring-petclinic-latest")
                     }
                 }
             }
