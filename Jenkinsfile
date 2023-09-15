@@ -45,8 +45,9 @@ pipeline {
             }
             steps {
                 script {
-                    docker.withregistry('https://registry.hub.docker.com', 'docker_hub_login') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
                         def dockerImage = docker.build("$DOCKER_REGISTRY_MAIN:spring-petclinic-latest")
+                        dockerImage.push()
                     }
                 }
             }
