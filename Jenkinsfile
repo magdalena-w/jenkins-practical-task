@@ -4,6 +4,7 @@ pipeline {
     environment {
         DOCKER_REGISTRY_MR = "magdalena01/mr"
         DOCKER_REGISTRY_MAIN = "magdalena01/main"
+        SHORT_COMMIT = "${GIT_COMMIT[0..7]}"
     }
 
     stages {
@@ -29,10 +30,8 @@ pipeline {
         stage('CreateDockerImageMR') {
             steps {
                 script {
-                    def gitCommit = currentBuild.displayName
-                    echo gitCommit
                     docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        def dockerImage = docker.build("$DOCKER_REGISTRY_MR:spring-petclinic-${gitCommit}")
+                        def dockerImage = docker.build("$DOCKER_REGISTRY_MR:spring-petclinic-$SHORT_COMMIT")
                         dockerImage.push()
                     }
                 }
