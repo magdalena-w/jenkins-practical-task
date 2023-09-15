@@ -30,9 +30,9 @@ pipeline {
             steps {
                 script {
                     def gitCommit = currentBuild.displayName
-                    echo $gitCommit
+                    echo gitCommit
                     docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_login') {
-                        def dockerImage = docker.build("$DOCKER_REGISTRY_MR:spring-petclinic-$gitCommit")
+                        def dockerImage = docker.build("$DOCKER_REGISTRY_MR:spring-petclinic-${gitCommit}")
                         dockerImage.push()
                     }
                 }
